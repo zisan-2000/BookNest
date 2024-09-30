@@ -3,7 +3,7 @@ from .models import (
     Country, Address, SiteUser, UserAddress, PaymentType, UserPaymentMethod,
     ProductCategory, Product, Variation, VariationOption, ProductItem, ProductConfiguration,
     ShoppingCart, ShoppingCartItem, ShippingMethod, OrderStatus, ShopOrder, OrderLine,
-    Promotion, PromotionCategory, UserReview
+    Promotion, PromotionCategory, UserReview, Vendor, Inventory, Writer, Publisher
 )
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -45,11 +45,25 @@ class UserPaymentMethodSerializer(serializers.ModelSerializer):
         model = UserPaymentMethod
         fields = '__all__'
 
+
+class WriterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Writer
+        fields = '__all__'
+
+
+class PublisherSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Publisher
+        fields = '__all__'
+
 class ProductCategorySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProductCategory
         fields = '__all__'
+
+
 
 class ProductSerializer(serializers.ModelSerializer):
     
@@ -80,6 +94,19 @@ class ProductConfigurationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductConfiguration
         fields = '__all__'
+
+
+class VendorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vendor
+        fields = '__all__'
+
+
+class InventorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inventory
+        fields = '__all__'
+
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
     
@@ -131,3 +158,5 @@ class UserReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserReview
         fields = '__all__'
+
+

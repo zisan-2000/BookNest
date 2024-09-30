@@ -29,7 +29,6 @@ class SiteUser(models.Model):
     def __str__(self):
         return self.email_address
 
-
 class UserAddress(models.Model):
     user = models.ForeignKey(SiteUser, on_delete=models.CASCADE, related_name='addresses')
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
@@ -66,11 +65,31 @@ class ProductCategory(models.Model):
         return self.category_name
 
 
+class Writer(models.Model):
+    name = models.CharField(max_length=191)
+    bio = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Publisher(models.Model):
+    name = models.CharField(max_length=191)
+    contact_email = models.EmailField(max_length=191, blank=True, null=True)
+    contact_phone = models.CharField(max_length=20, blank=True, null=True)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, related_name='publishers')
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=191)
     description = models.TextField(blank=True, null=True)
     product_image = models.ImageField(upload_to='product_images/', blank=True, null=True)
+    writer = models.ForeignKey(Writer, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    publisher = models.ForeignKey(Publisher, on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
 
     def __str__(self):
         return self.name
@@ -103,6 +122,7 @@ class ProductItem(models.Model):
         return f"{self.product.name} - {self.SKU}"
 
 
+
 class ProductConfiguration(models.Model):
     product_item = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='configurations')
     variation_option = models.ForeignKey(VariationOption, on_delete=models.CASCADE)
@@ -112,6 +132,26 @@ class ProductConfiguration(models.Model):
 
     def __str__(self):
         return f"Configuration for {self.product_item.SKU}"
+
+
+class Vendor(models.Model):
+    name = models.CharField(max_length=191)
+    contact_email = models.EmailField(max_length=191, blank=True, null=True)
+    contact_phone = models.CharField(max_length=20, blank=True, null=True)
+    address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True, related_name='vendors')
+
+    def __str__(self):
+        return self.name
+
+
+class Inventory(models.Model):
+    product_item = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='inventories')
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True, related_name='inventories')
+    warehouse_location = models.CharField(max_length=255, blank=True, null=True)
+    quantity_in_stock = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"Inventory for {self.product_item.SKU} from {self.vendor.name if self.vendor else 'Unknown vendor'}"
 
 
 class ShoppingCart(models.Model):
